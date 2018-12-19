@@ -15,7 +15,7 @@ def buildAndPushToQA() {
   		env.BUILD = readFile('commit').trim()
         env.CONTAINERANDBUILD = env.CONTAINER1 + ':' + env.BUILD
 
-		sh 'docker login -u ${dockeruser} -p ${dockerpass} ${DOCKER_REGISTRY_PUSH}'
+		sh 'docker login -u ${dockeruser} -p ${dockerpass}'
         sh 'docker build -t ${DOCKER_REGISTRY_PUSH}/${CONTAINER1} .'
         sh 'docker tag  ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:latest ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:${BUILD}'
 
