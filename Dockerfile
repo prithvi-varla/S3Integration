@@ -2,9 +2,11 @@ FROM openjdk:8-jdk-alpine
 
 VOLUME /tmp
 
-ADD ./build/libs/S3Integration-*.jar /
+ADD /build/libs/S3Integration-*.jar /
 
-RUN mv /S3Integration-*.jar /opt/app.jar
+RUN mkdir /opt
+
+RUN mv ./S3Integration-*.jar /opt/app.jar
 
 # Expose ports.
 EXPOSE 9091

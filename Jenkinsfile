@@ -1,0 +1,36 @@
+#!groovy
+
+env.DOCKER_REGISTRY_PUSH = 'hub.docker.com'
+env.CONTAINER1 = 'prithvi425/s3integration'
+
+def buildAndPushToQA() {
+      withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub',
+                        usernameVariable: 'dockeruser', passwordVariable: 'dockerpass']]) {
+        echo 'Printing Environmental Variables: '
+        sh 'env'
+        stage 'build'
+        checkout scm
+        sh 'git rev-parse HEAD > commit'
+
+  		env.BUILD = readFile('commit').trim()
+        env.CONTAINERANDBUILD = env.CONTAINER1 + ':' + env.BUILD
+
+		sh './gradlew -Dhttp.proxyHost="http://proxy-us-aws-nonprod.concurasp.com" -Dhttp.proxyPort="3128" -Dhttps.proxyHost="proxy-us-aws-nonprod.concurasp.com" -Dhttps.proxyPort="3128" -Dhttp.nonProxyHosts="auto-util2.concur.concurtech.org|*.concurtech.net|localhost|*.concurasp.com|*.concurtech.org" -Dhttps.nonProxyHosts="auto-util2.concur.concurtech.org|*.concurtech.net|localhost|*.concurasp.com|*.concurtech.org" --refresh-dependencies clean jacocoTestReport build'
+        sh 'docker login -u ${dockeruser} -p ${dockerpass} ${DOCKER_REGISTRY_PUSH}'
+        sh 'docker build -t ${DOCKER_REGISTRY_PUSH}/${CONTAINER1} .'
+        sh 'docker tag  ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:latest ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:${BUILD}'
+
+        stage 'push'
+        sh 'docker push ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:${BUILD}'
+        sh 'docker push ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:latest'
+
+
+      }
+
+}
+
+stage 'Initialize'
+node{
+    println("Develop Branch. Kicking off Build and deploying Testing1")
+    buildAndPushToQA()
+}
