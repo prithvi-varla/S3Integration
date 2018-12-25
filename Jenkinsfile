@@ -18,11 +18,12 @@ def buildAndPushToQA() {
 		sh './gradlew -Dhttp.proxyHost="http://proxy-us-aws-nonprod.concurasp.com" -Dhttp.proxyPort="3128" -Dhttps.proxyHost="proxy-us-aws-nonprod.concurasp.com" -Dhttps.proxyPort="3128" -Dhttp.nonProxyHosts="auto-util2.concur.concurtech.org|*.concurtech.net|localhost|*.concurasp.com|*.concurtech.org" -Dhttps.nonProxyHosts="auto-util2.concur.concurtech.org|*.concurtech.net|localhost|*.concurasp.com|*.concurtech.org" --refresh-dependencies clean build'
         sh 'docker login -u ${dockeruser} -p ${dockerpass}'
         sh 'docker build -t ${DOCKER_REGISTRY_PUSH}/${CONTAINER1} .'
-        sh 'docker tag  ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:latest ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:${BUILD}'
+        sh 'docker tag  ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:latest ${CONTAINER1}:latest'
+        sh 'docker tag  ${CONTAINER1}:latest ${CONTAINER1}:${BUILD}'
 
         stage 'push'
-        sh 'docker push ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:${BUILD}'
-        sh 'docker push ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:latest'
+        sh 'docker push ${CONTAINER1}:${BUILD}'
+        sh 'docker push ${CONTAINER1}:latest'
 
 
       }
