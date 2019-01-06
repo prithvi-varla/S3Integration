@@ -45,7 +45,7 @@ def buildAndPushToQA() {
         sh 'yes "" | aws configure --profile default ; aws ecr get-login > awslogin.sh ; sudo sh awslogin.sh'
 
         echo 'Register task definition'
-        sh 'aws ecs register-task-definition --cli-input-json file://deployment.json
+        sh 'aws ecs register-task-definition --cli-input-json file://deployment.json'
 
         echo 'Update service'
         sh 'aws ecs update-service --cluster secondCluster --service secondService --task-definition s3Integration --desired-count 1'
