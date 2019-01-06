@@ -1,0 +1,18 @@
+{
+  "family": "s3Integration",
+  "containerDefinitions": [
+    {
+      "image": "prithvi425/s3integration:latest",
+      "name": "s3Integration",
+      "cpu": 10,
+      "memory": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 9091,
+          "hostPort": 80
+        }
+      ]
+    }
+  ]
+}

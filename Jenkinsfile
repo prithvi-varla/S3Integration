@@ -5,7 +5,9 @@ env.CONTAINER1 = 'prithvi425/s3integration'
 
 def buildAndPushToQA() {
       withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-hub',
-                        usernameVariable: 'dockeruser', passwordVariable: 'dockerpass']]) {
+                        usernameVariable: 'dockeruser', passwordVariable: 'dockerpass'],
+                        [$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        credentialsId: 'awsCred', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
         echo 'Printing Environmental Variables: '
         sh 'env'
         stage 'build'
@@ -15,15 +17,37 @@ def buildAndPushToQA() {
   		env.BUILD = readFile('commit').trim()
         env.CONTAINERANDBUILD = env.CONTAINER1 + ':' + env.BUILD
 
+		# Add proxies for working gradle build in concu nonprod jenkins server
 		sh './gradlew -Dhttp.proxyHost="http://proxy-us-aws-nonprod.concurasp.com" -Dhttp.proxyPort="3128" -Dhttps.proxyHost="proxy-us-aws-nonprod.concurasp.com" -Dhttps.proxyPort="3128" -Dhttp.nonProxyHosts="auto-util2.concur.concurtech.org|*.concurtech.net|localhost|*.concurasp.com|*.concurtech.org" -Dhttps.nonProxyHosts="auto-util2.concur.concurtech.org|*.concurtech.net|localhost|*.concurasp.com|*.concurtech.org" --refresh-dependencies clean build'
+
+        # Login into Dockerhub
         sh 'docker login -u ${dockeruser} -p ${dockerpass}'
+
+        # Build the docker image
         sh 'docker build -t ${DOCKER_REGISTRY_PUSH}/${CONTAINER1} .'
+
+        # Tag docker image with build number and latest tags
         sh 'docker tag  ${DOCKER_REGISTRY_PUSH}/${CONTAINER1}:latest ${CONTAINER1}:latest'
         sh 'docker tag  ${CONTAINER1}:latest ${CONTAINER1}:${BUILD}'
 
         stage 'push'
+        #  Push docker image into Dockerhub
         sh 'docker push ${CONTAINER1}:${BUILD}'
         sh 'docker push ${CONTAINER1}:latest'
+
+
+        stage 'deploy'
+
+        sh 'mkdir ~/.aws && echo "[default]\naws_access_key_id = $AWS_ACCESS_KEY_ID\naws_secret_access_key = $AWS_SECRET_ACCESS_KEY\nregion=us-west-2" > ~/.aws/credentials'
+
+        # Login using AWS CLI
+        sh 'yes "" | aws configure --profile default ; aws ecr get-login > awslogin.sh ; sudo sh awslogin.sh'
+
+        # Register task definition`
+        sh 'aws ecs register-task-definition --cli-input-json file://deployment.json
+
+        # Update service
+        sh 'aws ecs update-service --cluster secondCluster --service secondService --task-definition s3Integration --desired-count 1'
 
 
       }
