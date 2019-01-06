@@ -1,0 +1,15 @@
+language: java
+install: true
+
+jdk:
+  - oraclejdk8
+
+script:
+  - ./gradlew --refresh-dependencies clean build
+services:
+  - docker
+deploy:
+  provider: script
+  script: bash deploy.sh
+  on:
+    branch: develop
