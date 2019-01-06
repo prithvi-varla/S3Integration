@@ -39,6 +39,9 @@ def buildAndPushToQA() {
 
         stage 'deploy'
 
+        echo 'aws help'
+        sh 'aws help'
+
         sh 'mkdir ~/.aws && echo "[default]\naws_access_key_id = $AWS_ACCESS_KEY_ID\naws_secret_access_key = $AWS_SECRET_ACCESS_KEY\nregion=us-west-2" > ~/.aws/credentials'
 
         echo 'Login using AWS CLI'
