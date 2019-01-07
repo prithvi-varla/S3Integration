@@ -6,10 +6,7 @@ jdk:
 
 script:
   - ./gradlew --refresh-dependencies clean build
-services:
-  - docker
-deploy:
-  provider: script
-  script: bash deploy.sh
-  on:
-    branch: develop
+  - ls
+  - cd build
+  - cd libs
+  - ls

@@ -4,6 +4,10 @@ VOLUME /tmp
 
 ADD /build/libs/S3Integration-*.jar /
 
+RUN cd /
+
+RUN ls
+
 RUN mkdir /opt
 
 RUN mv ./S3Integration-*.jar /opt/app.jar
