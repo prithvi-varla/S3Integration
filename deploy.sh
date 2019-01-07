@@ -14,7 +14,7 @@ sudo chmod +x /usr/bin/ecs-deploy
 # Use this for Docker Hub
 docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_PSW
 
-docker build -t haoliangyu/ecs-auto-deploy .
+docker build -t hub.docker.com/prithvi425/s3integration .
 docker tag hub.docker.com/prithvi425/s3integration:latest prithvi425/s3integration:latest
 docker push prithvi425/s3integration:latest
 
