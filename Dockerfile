@@ -1,12 +1,6 @@
 FROM openjdk:8-jdk-alpine
 
-VOLUME /tmp
-
 ADD /build/libs/S3Integration-*.jar /
-
-RUN cd /
-
-RUN ls
 
 RUN mkdir /opt
 
