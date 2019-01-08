@@ -29,7 +29,7 @@ public class EmployeeController {
     }
 
     @PostMapping(path = "/employeeImport/v1/employee")
-    public ResponseEntity<String> postEmployee(@RequestBody TaskRequest request) throws Exception {
+    public ResponseEntity<String> postEmployeeInfo(@RequestBody TaskRequest request) throws Exception {
 
         EmployeeService service = new EmployeeService();
 
