@@ -9,8 +9,6 @@ services:
 
 script:
   - ./gradlew --refresh-dependencies clean build
-
-after_script:
   - docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_PSW
   - docker build -t hub.docker.com/prithvi425/s3integration .
   - docker tag hub.docker.com/prithvi425/s3integration:latest prithvi425/s3integration:latest
