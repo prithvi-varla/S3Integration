@@ -1,3 +1,4 @@
+pip install --upgrade pip
 pip install --user awscli
 export PATH=$PATH:$HOME/.local/bin
 
