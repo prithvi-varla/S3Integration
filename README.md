@@ -28,6 +28,6 @@ Done using AWS - ECS
 
 Follow .travis.yml file and deploy.sh scripts to understand the deployment to AWS Fargate instance
 
-http://54.188.15.37:9091/swagger-ui.html#
+http://18.237.248.16:9091/swagger-ui.html#
 
 
