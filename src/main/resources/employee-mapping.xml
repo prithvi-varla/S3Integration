@@ -1,0 +1,19 @@
+<beanio xmlns="http://www.beanio.org/2012/03"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.beanio.org/2012/03 http://www.beanio.org/2012/03/mapping.xsd">
+
+    <stream name="employees" format="csv" >
+        <parser>
+            <property name="unquotedQuotesAllowed" value="true" />
+        </parser>
+        <record name="blankLineIgnored" ridLength="1">
+            <field name="field" rid="true" regex="^$" />
+        </record>
+        <group name="employee" class="com.example.batchTest.employee.Employee" occurs="1+">
+            <record name="employeeRecord" occurs="1" order="1">
+                <field name="firstName" occurs="1" />
+                <field name="lastName" occurs="1" />
+            </record>
+        </group>
+    </stream>
+</beanio>

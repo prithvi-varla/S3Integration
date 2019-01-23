@@ -4,7 +4,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 
-@EnableBatchProcessing
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.example.batchTest"})
 public class S3IntegrationApplication {
